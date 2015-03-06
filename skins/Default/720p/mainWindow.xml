@@ -92,6 +92,23 @@
                 <aspectratio>stretch</aspectratio>
                 <texture>default/dialogheader.png</texture>
             </control>
+            <control type="scrollbar" id="1096">
+                <description>scroll bar indicator for lists</description>
+                <left>1062</left>
+                <top>62</top>
+                <width>24</width>
+                <height>446</height>
+                <onleft>1600</onleft>
+                <onright>1500</onright>
+                <texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+                <texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+                <texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+                <textureslidernib>ScrollBarNib.png</textureslidernib>
+                <textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+                <orientation>vertical</orientation>
+                <showonepage>false</showonepage>
+                <visible>StringCompare(Container(1000).ListItem.Property(listTyp), 1600)</visible>
+            </control> 
             <control type="scrollbar" id="1097">
                 <description>scroll bar indicator for lists</description>
                 <left>1062</left>
@@ -1235,6 +1252,143 @@
                             <aspectratio>keep</aspectratio>
                             <visible>IntegerGreaterThan(ListItem.Property(Trusted), 0)</visible> 
                             <texture>icons/Key.png</texture>
+                        </control>
+                    </focusedlayout> 
+                </control>
+                <!-- Snapshot Menu Content -->
+                <control type="label" id="1601">
+                    <left>0</left>
+                    <top>200</top>
+                    <width>790</width>
+                    <height>220</height>
+                    <info>
+                    </info>
+                    <align>center</align>
+                    <visible>StringCompare(Container(1000).ListItem.Property(listTyp), 1600) + StringCompare(Container(1600).NumItems, 0)</visible> 
+                </control>
+                <control type="list" id="1600">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>788</width>
+                    <height>446</height>
+                    <onleft>1000</onleft>
+                    <onright>1096</onright>
+                    <pagecontrol>1096</pagecontrol>
+                    <scrolltime>300</scrolltime>
+                    <visible>StringCompare(Container(1000).ListItem.Property(listTyp), 1600)</visible>    
+                    <itemlayout height="70">
+                        <left>0</left>
+                        <top>0</top>
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>786</width>
+                            <height>68</height>
+                            <texture border="5">default/button-nofocus.png</texture>
+                        </control>                                              
+                        <!-- Snapshot Name -->
+                        <control type="label">
+                            <left>120</left>
+                            <top>10</top>
+                            <width>390</width>
+                            <height>30</height>
+                            <font>font24_title</font>
+                            <textcolor>blue</textcolor>
+                            <info>ListItem.Label</info>
+                            <visible>true</visible>
+                        </control>
+                        <!-- Snapshot ID -->
+                        <control type="label">
+                            <left>420</left>
+                            <top>42</top>
+                            <width>350</width>
+                            <height>20</height>
+                            <font>font12</font>
+                            <textcolor>blue</textcolor>
+                            <label>$ADDON[service.openelec.settings 32396]: [COLOR=white]$INFO[ListItem.Property(ID)][/COLOR]</label>
+                        </control>
+                        <!-- Created Date -->
+                        <control type="label">
+                            <left>120</left>
+                            <top>42</top>
+                            <width>350</width>
+                            <height>20</height>
+                            <font>font12</font>
+                            <textcolor>blue</textcolor>
+                            <label>$ADDON[service.openelec.settings 32395]: [COLOR=white]$INFO[ListItem.Property(otime)][/COLOR]</label>
+                        </control>
+                        <!-- Activated State -->
+                        <control type="image">
+                            <left>20</left>
+                            <top>10</top>
+                            <width>48</width>
+                            <height>48</height>
+                            <aspectratio>keep</aspectratio>
+                            <visible>StringCompare(ListItem.Property(active), 1)</visible> 
+                            <texture>icons/Favorite.png</texture>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout height="70">
+                        <left>0</left>
+                        <top>0</top>
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>788</width>
+                            <height>68</height>
+                            <texture border="5">default/button-nofocus.png</texture>
+                        </control>
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>788</width>
+                            <height>68</height>
+                            <visible>Control.HasFocus(1600)</visible>
+                            <texture border="5">default/button-focus2.png</texture>
+                            <animation type="Visible" reversible="false">
+                                <effect type="fade" start="0" end="100" time="300" />
+                            </animation>
+                        </control>                                                
+                        <!-- Snapshot Name -->
+                        <control type="label">
+                            <left>120</left>
+                            <top>10</top>
+                            <width>390</width>
+                            <height>30</height>
+                            <font>font24_title</font>
+                            <textcolor>blue</textcolor>
+                            <info>ListItem.Label</info>
+                            <visible>true</visible>
+                        </control>
+                        <!-- Snapshot ID -->
+                        <control type="label">
+                            <left>420</left>
+                            <top>42</top>
+                            <width>350</width>
+                            <height>20</height>
+                            <font>font12</font>
+                            <textcolor>blue</textcolor>
+                            <label>$ADDON[service.openelec.settings 32396]: [COLOR=white]$INFO[ListItem.Property(ID)][/COLOR]</label>
+                        </control>
+                        <!-- Created Date -->
+                        <control type="label">
+                            <left>120</left>
+                            <top>42</top>
+                            <width>350</width>
+                            <height>20</height>
+                            <font>font12</font>
+                            <textcolor>blue</textcolor>
+                            <label>$ADDON[service.openelec.settings 32395]: [COLOR=white]$INFO[ListItem.Property(otime)][/COLOR]</label>
+                        </control>
+                        <!-- Activated State -->
+                        <control type="image">
+                            <left>20</left>
+                            <top>10</top>
+                            <width>48</width>
+                            <height>48</height>
+                            <aspectratio>keep</aspectratio>
+                            <visible>StringCompare(ListItem.Property(active), 1)</visible> 
+                            <texture>icons/Favorite.png</texture>
                         </control>
                     </focusedlayout> 
                 </control>

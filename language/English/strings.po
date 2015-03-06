@@ -837,3 +837,39 @@ msgstr ""
 msgctxt "#32391"
 msgid "Enable LCD Driver Support"
 msgstr ""
+
+msgctxt "#32392"
+msgid "Snapshots"
+msgstr ""
+
+msgctxt "#32393"
+msgid "Create, delete and restore system snapshots"
+msgstr ""
+
+msgctxt "#32394"
+msgid "Your system doesn't contain a btrfs root."
+msgstr ""
+
+msgctxt "#32395"
+msgid "Created"
+msgstr ""
+
+msgctxt "#32396"
+msgid "ID"
+msgstr ""
+
+msgctxt "#32397"
+msgid "Create Snapshot"
+msgstr ""
+
+msgctxt "#32398"
+msgid "Delete Snapshot"
+msgstr ""
+
+msgctxt "#32399"
+msgid "Activate Snapshot"
+msgstr ""
+
+msgctxt "#32400"
+msgid "Rename Snapshot"
+msgstr ""
