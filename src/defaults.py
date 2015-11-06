@@ -76,6 +76,7 @@ services = {
     'CRON_DAEMON': '/sbin/crond',
     'LCD_DRIVER_DIR': '/usr/lib/lcdproc/',
     'D_LCD_DRIVER': 'none',
+    'PULSEAUDIO_DAEMON': '/usr/bin/pulseaudio',
     }
 
 system = {
@@ -113,4 +114,5 @@ _services = {
     'obexd': ['obex.service'],
     'crond': ['cron.service'],
     'lcdd': ['lcdd.service'],
+    'pulse': ['pulseaudio.service'],
     }

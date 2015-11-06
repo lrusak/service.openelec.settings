@@ -27,7 +27,8 @@
 
 import os
 import glob
-
+import xbmc
+import time
 
 class services:
 
@@ -46,6 +47,7 @@ class services:
     CRON_DAEMON = None
     LCD_DRIVER_DIR = None
     D_LCD_DRIVER = None
+    PULSEAUDIO_DAEMON = None
     menu = {'4': {
         'name': 32001,
         'menuLoader': 'load_menu',
@@ -239,6 +241,21 @@ class services:
                             },
                         },
                     },
+                'pulse': {
+                    'order': 7,
+                    'name': 32347,
+                    'not_supported': [],
+                    'settings': {
+                        'pulse_autostart': {
+                            'order': 1,
+                            'name': 32348,
+                            'value': None,
+                            'action': 'toggle_pulseaudio',
+                            'type': 'bool',
+                            'InfoText': 756,
+                            },
+                        },
+                    },
                 }
 
             self.oe = oeMain
@@ -255,6 +272,7 @@ class services:
             self.initialize_avahi(service=1)
             self.initialize_cron(service=1)
             self.init_bluetooth(service=1)
+            self.init_pulseaudio(service=1)
             self.oe.dbg_log('services::start_service', 'exit_function', 0)
         except Exception, e:
             self.oe.dbg_log('services::start_service', 'ERROR: (%s)' % repr(e))
@@ -363,6 +381,14 @@ class services:
                         self.struct['bluez']['settings']['obex_root']['hidden'] = True
                 else:
                     self.struct['bluez']['hidden'] = 'true'
+
+            # PULSEAUDIO
+
+            if os.path.isfile(self.PULSEAUDIO_DAEMON):
+                self.struct['pulse']['settings']['pulse_autostart']['value'] = self.oe.get_service_state('pulse')
+            else:
+                self.struct['pulse']['hidden'] = 'true'
+
             self.oe.dbg_log('services::load_values', 'exit_function', 0)
         except Exception, e:
             self.oe.dbg_log('services::load_values', 'ERROR: (%s)' % repr(e))
@@ -505,6 +531,42 @@ class services:
             self.oe.set_busy(0)
             self.oe.dbg_log('services::init_obex', 'ERROR: (' + repr(e) + ')', 4)
 
+    def init_pulseaudio(self, **kwargs):
+        try:
+            self.oe.dbg_log('services::init_pulseaudio', 'enter_function', 0)
+            self.oe.set_busy(1)
+            if 'listItem' in kwargs:
+                self.set_value(kwargs['listItem'])
+            self.oe.set_busy(0)
+            self.oe.dbg_log('services::init_pulseaudio', 'exit_function', 0)
+        except Exception, e:
+            self.oe.set_busy(0)
+            self.oe.dbg_log('services::init_pulseaudio', 'ERROR: (' + repr(e) + ')')
+
+    def toggle_pulseaudio(self, **kwargs):
+        try:
+            self.oe.dbg_log('services::toggle_pulseaudio', 'enter_function', 0)
+            self.oe.set_busy(1)
+            if 'listItem' in kwargs:
+                self.set_value(kwargs['listItem'])
+            state = 1
+            options = {}
+            if self.struct['pulse']['settings']['pulse_autostart']['value'] != '1':
+                state = 0
+                self.oe.execute('systemctl disable pulseaudio')
+            else:
+                self.oe.execute('systemctl enable pulseaudio')
+            xbmc.audioSuspend()
+            time.sleep(2)
+            self.oe.set_service('pulse', options, state)
+            time.sleep(4)
+            xbmc.audioResume()
+            self.oe.set_busy(0)
+            self.oe.dbg_log('services::toggle_pulseaudio', 'exit_function', 0)
+        except Exception, e:
+            self.oe.set_busy(0)
+            self.oe.dbg_log('services::toggle_pulseaudio', 'ERROR: (' + repr(e) + ')')
+
     def set_lcd_driver(self, listItem=None):
         try:
             self.oe.dbg_log('services::set_lcd_driver', 'enter_function', 0)
@@ -611,5 +673,3 @@ class services:
             self.oe.dbg_log('services::wizard_set_samba', 'exit_function', 0)
         except Exception, e:
             self.oe.dbg_log('services::wizard_set_samba', 'ERROR: (%s)' % repr(e))
-
-
