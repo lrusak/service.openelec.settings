@@ -250,7 +250,11 @@ msgctxt "#755"
 msgid "Auto share external drives / partitions"
 msgstr ""
 
-#empty strings from id 756 to 32000
+msgctxt "#756"
+msgid "Set to ON to enable the Pulseaudio sound service"
+msgstr ""
+
+#empty strings from id 757 to 32000
 
 msgctxt "#32001"
 msgid "Services"
@@ -728,7 +732,15 @@ msgctxt "#32358"
 msgid "Trust and Connect"
 msgstr ""
 
-#empty strings from id 32359 to 32361
+msgctxt "#32359"
+msgid "Pulseaudio"
+msgstr ""
+
+msgctxt "#32360"
+msgid "Enable Pulseaudio"
+msgstr ""
+
+#empty string with id 32361
 
 msgctxt "#32362"
 msgid "Check for updates now:"
