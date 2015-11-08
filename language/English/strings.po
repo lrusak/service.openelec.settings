@@ -130,7 +130,9 @@ msgctxt "#720"
 msgid "Set to ON and Bluetooth devices will be disabled during power-saving modes"
 msgstr ""
 
-#empty string with id 721
+msgctxt "#721"
+msgid "Set to a desired action when a bluetooth device is disconnected/connected"
+msgstr ""
 
 msgctxt "#722"
 msgid "Create a tar archive containing all @DISTRONAME@ and Kodi configuration settings, databases and thumbnail content. Backup files will be stored in /storage/backups"
@@ -720,7 +722,9 @@ msgctxt "#32344"
 msgid "Enable Bluetooth"
 msgstr ""
 
-#empty string with id 32345
+msgctxt "#32345"
+msgid "Select Default Action"
+msgstr ""
 
 msgctxt "#32346"
 msgid "Bluetooth is disabled"

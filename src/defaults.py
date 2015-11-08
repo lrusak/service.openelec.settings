@@ -51,6 +51,7 @@ connman = {
 
 bluetooth = {
     'BLUETOOTH_DAEMON': '/usr/lib/bluetooth/bluetoothd',
+    'BLUETOOTH_ACTION_OPTION': 'none',
     'OBEX_DAEMON': '/usr/lib/bluetooth/obexd',
     'ENABLED': lambda : (True if os.path.exists(bluetooth['BLUETOOTH_DAEMON']) else False),
     'D_OBEXD_ROOT': '/storage/downloads/',
