@@ -215,8 +215,21 @@ class services:
                             'type': 'bool',
                             'InfoText': 720,
                             },
-                        'obex_enabled': {
+                        'action_option': {
                             'order': 2,
+                            'name': 32345,
+                            'value': None,
+                            'action': 'init_bluetooth',
+                            'type': 'multivalue',
+                            'parent': {
+                                'entry': 'enabled',
+                                'value': ['1'],
+                                },
+                            'values': [],
+                            'InfoText': 721,
+                            },
+                        'obex_enabled': {
+                            'order': 3,
                             'name': 32384,
                             'value': None,
                             'action': 'init_obex',
@@ -228,7 +241,7 @@ class services:
                             'InfoText': 751,
                             },
                         'obex_root': {
-                            'order': 3,
+                            'order': 4,
                             'name': 32385,
                             'value': None,
                             'action': 'init_obex',
@@ -371,6 +384,8 @@ class services:
             if 'bluetooth' in self.oe.dictModules:
                 if os.path.isfile(self.oe.dictModules['bluetooth'].BLUETOOTH_DAEMON):
                     self.struct['bluez']['settings']['enabled']['value'] = self.oe.get_service_state('bluez')
+                    self.struct['bluez']['settings']['action_option']['values'] = ['none', 'playpause', 'stop']
+                    self.struct['bluez']['settings']['action_option']['value'] = self.oe.get_service_option('bluez', 'BLUETOOTH_ACTION_OPTION').replace('"', '')
                     if os.path.isfile(self.oe.dictModules['bluetooth'].OBEX_DAEMON):
                         self.struct['bluez']['settings']['obex_enabled']['value'] = self.oe.get_service_state('obexd')
                         self.struct['bluez']['settings']['obex_root']['value'] = self.oe.get_service_option('obexd', 'OBEXD_ROOT',
@@ -504,6 +519,8 @@ class services:
                     del self.struct['bluez']['settings']['obex_enabled']['hidden']
                 if 'hidden' in self.struct['bluez']['settings']['obex_root']:
                     del self.struct['bluez']['settings']['obex_root']['hidden']
+            if not self.struct['bluez']['settings']['action_option']['value'] is None and not self.struct['bluez']['settings']['action_option']['value'] == 'none' and state == 1:
+                options['BLUETOOTH_ACTION_OPTION'] = '"%s"' % self.struct['bluez']['settings']['action_option']['value']
             self.oe.set_service('bluez', options, state)
             self.oe.set_busy(0)
             self.oe.dbg_log('services::init_bluetooth', 'exit_function', 0)

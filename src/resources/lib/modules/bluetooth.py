@@ -809,6 +809,19 @@ class bluetooth:
                                 self.forceRender()
                     else:
                         self.parent.menu_connections()
+                for prop in changed:
+                    if prop == 'Connected':
+                        if self.oe.get_service_option('bluez', 'BLUETOOTH_ACTION_OPTION').replace('"', '') == 'playpause':
+                            if changed[prop]:
+                                if xbmc.getCondVisibility("Player.Paused"):
+                                    xbmc.Player().pause()
+                            elif not changed[prop]:
+                                if xbmc.getCondVisibility("Player.Playing"):
+                                    xbmc.Player().pause()
+                        elif self.oe.get_service_option('bluez', 'BLUETOOTH_ACTION_OPTION').replace('"', '') == 'stop':
+                            if not changed[prop]:
+                                if xbmc.getCondVisibility("Player.Playing"):
+                                        xbmc.Player().stop()
                 self.oe.dbg_log('bluetooth::monitor::PropertiesChanged', 'exit_function', 0)
             except Exception, e:
                 self.oe.dbg_log('bluetooth::monitor::PropertiesChanged', 'ERROR: (' + repr(e) + ')', 4)
