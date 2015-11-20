@@ -79,6 +79,7 @@ services = {
     'D_LCD_DRIVER': 'none',
     'PULSEAUDIO_DAEMON': '/usr/bin/pulseaudio',
     'PULSEAUDIO_ZEROCONF': '0',
+    'PULSEAUDIO_COMBINED': '0',
     }
 
 system = {

@@ -49,6 +49,7 @@ class services:
     D_LCD_DRIVER = None
     PULSEAUDIO_DAEMON = None
     PULSEAUDIO_ZEROCONF = None
+    PULSEAUDIO_COMBINED = None
     menu = {'4': {
         'name': 32001,
         'menuLoader': 'load_menu',
@@ -280,6 +281,18 @@ class services:
                                 },
                             'InfoText': 757,
                             },
+                        'pulse_combined': {
+                            'order': 3,
+                            'name': 32350,
+                            'value': None,
+                            'action': 'toggle_pulseaudio',
+                            'type': 'bool',
+                            'parent': {
+                                'entry': 'pulse_autostart',
+                                'value': ['1'],
+                                },
+                            'InfoText': 758,
+                            },
                         },
                     },
                 }
@@ -416,6 +429,8 @@ class services:
                 self.struct['pulse']['settings']['pulse_autostart']['value'] = self.oe.get_service_state('pulse')
                 self.struct['pulse']['settings']['pulse_zeroconf']['value'] = self.oe.get_service_option('pulse',
                         'PULSEAUDIO_ZEROCONF').replace('true', '1').replace('false', '0').replace('"', '')
+                self.struct['pulse']['settings']['pulse_zeroconf']['value'] = self.oe.get_service_option('pulse',
+                        'PULSEAUDIO_COMBINED').replace('true', '1').replace('false', '0').replace('"', '')
             else:
                 self.struct['pulse']['hidden'] = 'true'
 
@@ -571,8 +586,11 @@ class services:
                 self.set_value(kwargs['listItem'])
             if self.struct['pulse']['settings']['pulse_autostart']['value'] != '1':
                 self.struct['pulse']['settings']['pulse_zeroconf']['hidden'] = True
+                self.struct['pulse']['settings']['pulse_combined']['hidden'] = True
             if self.struct['pulse']['settings']['pulse_zeroconf']['value'] == '1':
                 self.oe.execute('pactl load-module module-zeroconf-discover')
+            if self.struct['pulse']['settings']['pulse_combined']['value'] == '1':
+                self.oe.execute('pactl load-module module-combine-sink slaves=' + self.get_pulse_devices())
             self.oe.set_busy(0)
             self.oe.dbg_log('services::init_pulseaudio', 'exit_function', 0)
         except Exception, e:
@@ -591,14 +609,21 @@ class services:
                 state = 0
                 self.oe.execute('systemctl disable pulseaudio')
                 self.struct['pulse']['settings']['pulse_zeroconf']['hidden'] = True
+                self.struct['pulse']['settings']['pulse_combined']['hidden'] = True
             else:
                 self.oe.execute('systemctl enable pulseaudio')
                 if 'hidden' in self.struct['pulse']['settings']['pulse_zeroconf']:
                     del self.struct['pulse']['settings']['pulse_zeroconf']['hidden']
+                if 'hidden' in self.struct['pulse']['settings']['pulse_combined']:
+                    del self.struct['pulse']['settings']['pulse_combined']['hidden']
             if self.struct['pulse']['settings']['pulse_zeroconf']['value'] == '1':
                 options['PULSEAUDIO_ZEROCONF'] = '1'
             else:
                 options['PULSEAUDIO_ZEROCONF'] = '0'
+            if self.struct['pulse']['settings']['pulse_combined']['value'] == '1':
+                options['PULSEAUDIO_COMBINED'] = '1'
+            else:
+                options['PULSEAUDIO_COMBINED'] = '0'
             xbmc.audioSuspend()
             time.sleep(2)
             self.oe.set_service('pulse', options, state)
@@ -611,6 +636,26 @@ class services:
         except Exception, e:
             self.oe.set_busy(0)
             self.oe.dbg_log('services::toggle_pulseaudio', 'ERROR: (' + repr(e) + ')')
+
+    def get_pulse_devices(self):
+        try:
+            self.oe.dbg_log('services::get_pulse_devices', 'enter_function', 0)
+            devices = self.oe.execute('pactl list sinks short', get_result=1)
+            devices = devices.split('\n')
+            sinks = {}
+            for i,line in enumerate(devices):
+                sinks[i] = line.split('\t')
+
+            for line in sinks:
+                sinks[i] = filter(None, sinks[i])
+            sinks = dict((k, v) for k, v in sinks.iteritems() if v)
+            output = ''
+            for i in sinks:
+                output = output + sinks[i][1] + ','
+            return output
+            self.oe.dbg_log('services::get_pulse_devices', 'exit_function', 0)
+        except Exception, e:
+            self.oe.dbg_log('services::get_pulse_devices', 'ERROR: (' + repr(e) + ')')
 
     def set_lcd_driver(self, listItem=None):
         try:
