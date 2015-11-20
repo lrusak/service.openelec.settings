@@ -78,6 +78,7 @@ services = {
     'LCD_DRIVER_DIR': '/usr/lib/lcdproc/',
     'D_LCD_DRIVER': 'none',
     'PULSEAUDIO_DAEMON': '/usr/bin/pulseaudio',
+    'PULSEAUDIO_ZEROCONF': '0',
     }
 
 system = {

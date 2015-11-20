@@ -48,6 +48,7 @@ class services:
     LCD_DRIVER_DIR = None
     D_LCD_DRIVER = None
     PULSEAUDIO_DAEMON = None
+    PULSEAUDIO_ZEROCONF = None
     menu = {'4': {
         'name': 32001,
         'menuLoader': 'load_menu',
@@ -267,6 +268,18 @@ class services:
                             'type': 'bool',
                             'InfoText': 756,
                             },
+                        'pulse_zeroconf': {
+                            'order': 2,
+                            'name': 32349,
+                            'value': None,
+                            'action': 'toggle_pulseaudio',
+                            'type': 'bool',
+                            'parent': {
+                                'entry': 'pulse_autostart',
+                                'value': ['1'],
+                                },
+                            'InfoText': 757,
+                            },
                         },
                     },
                 }
@@ -401,6 +414,8 @@ class services:
 
             if os.path.isfile(self.PULSEAUDIO_DAEMON):
                 self.struct['pulse']['settings']['pulse_autostart']['value'] = self.oe.get_service_state('pulse')
+                self.struct['pulse']['settings']['pulse_zeroconf']['value'] = self.oe.get_service_option('pulse',
+                        'PULSEAUDIO_ZEROCONF').replace('true', '1').replace('false', '0').replace('"', '')
             else:
                 self.struct['pulse']['hidden'] = 'true'
 
@@ -554,6 +569,10 @@ class services:
             self.oe.set_busy(1)
             if 'listItem' in kwargs:
                 self.set_value(kwargs['listItem'])
+            if self.struct['pulse']['settings']['pulse_autostart']['value'] != '1':
+                self.struct['pulse']['settings']['pulse_zeroconf']['hidden'] = True
+            if self.struct['pulse']['settings']['pulse_zeroconf']['value'] == '1':
+                self.oe.execute('pactl load-module module-zeroconf-discover')
             self.oe.set_busy(0)
             self.oe.dbg_log('services::init_pulseaudio', 'exit_function', 0)
         except Exception, e:
@@ -571,12 +590,21 @@ class services:
             if self.struct['pulse']['settings']['pulse_autostart']['value'] != '1':
                 state = 0
                 self.oe.execute('systemctl disable pulseaudio')
+                self.struct['pulse']['settings']['pulse_zeroconf']['hidden'] = True
             else:
                 self.oe.execute('systemctl enable pulseaudio')
+                if 'hidden' in self.struct['pulse']['settings']['pulse_zeroconf']:
+                    del self.struct['pulse']['settings']['pulse_zeroconf']['hidden']
+            if self.struct['pulse']['settings']['pulse_zeroconf']['value'] == '1':
+                options['PULSEAUDIO_ZEROCONF'] = '1'
+            else:
+                options['PULSEAUDIO_ZEROCONF'] = '0'
             xbmc.audioSuspend()
             time.sleep(2)
             self.oe.set_service('pulse', options, state)
             time.sleep(4)
+            self.init_pulseaudio()
+            time.sleep(1)
             xbmc.audioResume()
             self.oe.set_busy(0)
             self.oe.dbg_log('services::toggle_pulseaudio', 'exit_function', 0)

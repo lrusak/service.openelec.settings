@@ -256,7 +256,11 @@ msgctxt "#756"
 msgid "Set to ON to enable the Pulseaudio sound server"
 msgstr ""
 
-#empty strings from id 757 to 32000
+msgctxt "#757"
+msgid "Set to ON to discover devices on other PulseAudio servers using Zeroconf"
+msgstr ""
+
+#empty strings from id 758 to 32000
 
 msgctxt "#32001"
 msgid "Services"
@@ -738,7 +742,11 @@ msgctxt "#32348"
 msgid "Enable Pulseaudio"
 msgstr ""
 
-#empty strings from id 32349 to 32357
+msgctxt "#32349"
+msgid "Pulseaudio Server Discovery"
+msgstr ""
+
+#empty strings from id 32350 to 32357
 
 msgctxt "#32358"
 msgid "Trust and Connect"
