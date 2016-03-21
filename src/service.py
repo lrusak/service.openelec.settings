@@ -74,6 +74,14 @@ class service_thread(threading.Thread):
             self.oe.dbg_log('_service_::run', 'enter_function', 0)
             if self.oe.read_setting('libreelec', 'wizard_completed') == None:
                 threading.Thread(target=self.oe.openWizard).start()
+            else:
+                if self.oe.read_settings('libreelec', 'migration_completed') == None:
+                    dialog = xbmcgui.Dialog()
+                    if dialog.yesno('LibreELEC', 'It looks like you are migrating from OpenELEC',
+                                                 'Would you like us to optimize the experience for you?',
+                                                 'Selecting no may result in unexpected behaviour'):
+                         xbmc.executeJSONRPC('{ "jsonrpc": "2.0", "method": "Addons.SetAddonEnabled", "params": { "name": "repository.unofficial.addon.pro", "id": "Global.Toggle" } }')
+                    self.oe.write_setting('libreelec', 'migration_completed', 'True')
             while self.stopped == False:
                 self.oe.dbg_log('_service_::run', 'WAITING:', 1)
                 (conn, addr) = self.sock.accept()
